@@ -59,22 +59,23 @@ class FormController extends Controller
     }
 
     protected function saveFields(Form $form, array $fields){
-        foreach ($fields as $idx => $f){
-            $field = $form->fields()->create([
-                'type' => $f['type'],
-                'label' => $f['label'] ?? '',
-                'required' => !empty($f['required']),
-                'order' => $f['order'] ?? $idx
-            ]);
-            if (in_array($f['type'], ['checkbox','radio']) && !empty($f['options'])){
-                foreach ($f['options'] as $opIdx => $op){
-                    $field->options()->create([
-                        'label' => $op['label'] ?? ($op['value'] ?? 'Option'),
-                        'value' => $op['value'] ?? null,
-                        'order' => $opIdx
-                    ]);
-                }
+    foreach ($fields as $idx => $f){
+        $field = $form->fields()->create([
+            'type' => $f['type'],
+            'label' => $f['label'] ?? '',
+            'required' => !empty($f['required']),
+            'order' => $f['order'] ?? $idx
+        ]);
+        // Add 'select' to the condition to save options
+        if (in_array($f['type'], ['checkbox','radio','select']) && !empty($f['options'])){
+            foreach ($f['options'] as $opIdx => $op){
+                $field->options()->create([
+                    'label' => $op['label'] ?? ($op['value'] ?? 'Option'),
+                    'value' => $op['value'] ?? null,
+                    'order' => $opIdx
+                ]);
             }
         }
     }
+}
 }
